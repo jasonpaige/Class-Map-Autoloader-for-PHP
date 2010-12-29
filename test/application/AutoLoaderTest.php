@@ -10,6 +10,7 @@ require_once dirname(__FILE__).'/../../application/AutoLoader.php';
 class AutoLoaderTest extends PHPUnit_Framework_TestCase {
 
     protected function setUp() {
+        AutoLoader::instance()->expireCache();
         AutoLoader::instance()->saveToCache();
     }
 
@@ -20,6 +21,8 @@ class AutoLoaderTest extends PHPUnit_Framework_TestCase {
     public function testInstance() {
         $this->assertTrue(AutoLoader::instance() instanceof AutoLoader);
         $this->assertTrue(TestClass::isLoaded());
+        $this->assertTrue(TestClass2::isLoaded());
+        $this->assertTrue(TestClass3::isLoaded());
     }
 
     public function testExpireCache() {

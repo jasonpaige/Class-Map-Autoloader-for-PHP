@@ -2,6 +2,8 @@
 
 /**
  * @desc AutoLoader
+ * @todo Add support for PHP5.3 namespaces
+ * @todo Add more caching support
  * @author jason
  */
 class AutoLoader {
@@ -29,6 +31,9 @@ class AutoLoader {
         $this->init();
     }
 
+    /**
+     * initialises the class map
+     */
     protected function init() {
         try {
             $this->loadFromCache();
@@ -49,21 +54,29 @@ class AutoLoader {
     }
 
     /**
-     * rebuild the class map
+     * rebuilds the class map
      */
     public function rebuild() {
         if ($this->reloadClassMap) {
+            $this->classMap = array();
             $this->mapFilesInDir($this->rootDirectory);
+            print_r($this->classMap);
             $this->saveToCache();
         } else {
             throw new Exception("Unable to rebuild class map", 101);
         }
     }
 
-    public function getCacheLocation() {
+    /**
+     * @return string
+     */
+    protected function getCacheLocation() {
         return $this->rootDirectory.$this->cacheFile;
     }
 
+    /**
+     * Loads the class map from the cache file
+     */
     protected function loadFromCache() {
         try {
             if (!$serializedData = file_get_contents($this->rootDirectory.$this->cacheFile)) {
@@ -103,15 +116,15 @@ class AutoLoader {
     protected function mapFilesInDir($dir) {
         $handle = opendir($dir);
         while (($file = readdir($handle)) !== false) {
-            $ext = ".".pathinfo($dir.$file , PATHINFO_EXTENSION);
-            if ($this->fileExt[$ext] !== true) {
+            if ($file == "." || $file == "..") {
                 continue;
             }
+            $ext = ".".pathinfo($dir.$file , PATHINFO_EXTENSION);
             $filepath = $dir == '.' ? $file : $dir . '/' . $file;
             if (is_link($filepath)) {
                 continue;
             }
-            if (is_file($filepath)) {
+            if (is_file($filepath) && $this->fileExt[$ext] == true) {
                 $this->loadClassesFromFile($filepath);
             } else if (is_dir($filepath)) {
                 $this->mapFilesInDir($filepath);
@@ -172,6 +185,7 @@ class AutoLoader {
                 self::instance()->rebuild();
                 self::instance()->includeClass($className);
             } catch (Exception $ex) {
+                die("im here :( {$className}");
                 if ($ex->getCode() == 101) {
                     throw new Exception("Unable to load class {$className}, class not found in map and \$reloadClassMap is set to false.");
                 } else {
@@ -179,14 +193,5 @@ class AutoLoader {
                 }
             }
         }
-    }
-
-    /**
-     * Registers a function to be called when this object is to be saved into a cache
-     * Note: If using < PHP5.3 it will assume $function is a function name
-     * @param function|string $function
-     */
-    public function registerCacheFunction($function) {
-        $this->cacheFunction = $function;
     }
 }
