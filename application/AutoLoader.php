@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @desc AutoLoader
+ * AutoLoader singleton class.
+ * Thanks to Linus Norton <linusnorton@gmail.com> http://code.google.com/p/php-xframe/
  * @todo Add support for PHP5.3 namespaces
  * @todo Add more caching support
  * @author jason
@@ -169,7 +170,7 @@ class AutoLoader {
                 include $this->classMap[$className];
                 return true;
             }
-            catch (FrameEx $ex) { /*drop below and return false */ }
+            catch (Exception $ex) { /*drop below and return false */ }
         }
 
         return false;
