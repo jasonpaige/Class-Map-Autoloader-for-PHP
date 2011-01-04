@@ -185,7 +185,6 @@ class AutoLoader {
                 self::instance()->rebuild();
                 self::instance()->includeClass($className);
             } catch (Exception $ex) {
-                die("im here :( {$className}");
                 if ($ex->getCode() == 101) {
                     throw new Exception("Unable to load class {$className}, class not found in map and \$reloadClassMap is set to false.");
                 } else {
