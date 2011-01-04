@@ -61,7 +61,6 @@ class AutoLoader {
         if ($this->reloadClassMap) {
             $this->classMap = array();
             $this->mapFilesInDir($this->rootDirectory);
-            print_r($this->classMap);
             $this->saveToCache();
         } else {
             throw new Exception("Unable to rebuild class map", 101);
