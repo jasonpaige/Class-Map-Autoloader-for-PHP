@@ -1,7 +1,5 @@
 <?php
-require_once 'PHPUnit/Framework.php';
-
-require_once dirname(__FILE__).'/../../application/AutoLoader.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR . 'AutoLoader.php';
 
 /**
  * Test class for AutoLoader.
@@ -10,7 +8,7 @@ require_once dirname(__FILE__).'/../../application/AutoLoader.php';
 class AutoLoaderTest extends PHPUnit_Framework_TestCase {
 
     protected function setUp() {
-        AutoLoader::instance()->expireCache();
+        AutoLoader::instance(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR)->expireCache();
         AutoLoader::instance()->saveToCache();
     }
 
